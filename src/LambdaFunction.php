@@ -6,12 +6,15 @@
 namespace Hammerstone\Sidecar;
 
 use Aws\Result;
+use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
 use Hammerstone\Sidecar\Exceptions\SidecarException;
 use Hammerstone\Sidecar\Results\PendingResult;
 use Hammerstone\Sidecar\Results\SettledResult;
+use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Throwable;
 
 abstract class LambdaFunction
 {
@@ -41,11 +44,10 @@ abstract class LambdaFunction
     /**
      * Execute the current function and return the response.
      *
-     * @param $payloads
      * @param  bool  $async
      * @return array
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public static function executeMany($payloads, $async = false)
     {
@@ -55,10 +57,9 @@ abstract class LambdaFunction
     /**
      * Execute the current function and return the response.
      *
-     * @param $payloads
      * @return array
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public static function executeManyAsync($payloads)
     {
@@ -178,11 +179,9 @@ abstract class LambdaFunction
     /**
      * The default representation of this function as an HTTP response.
      *
-     * @param $request
-     * @param  SettledResult  $result
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function toResponse($request, SettledResult $result)
     {
@@ -211,7 +210,6 @@ abstract class LambdaFunction
     }
 
     /**
-     * @param  Result  $raw
      * @return SettledResult
      */
     public function toSettledResult(Result $raw)
@@ -220,7 +218,6 @@ abstract class LambdaFunction
     }
 
     /**
-     * @param  PromiseInterface  $raw
      * @return PendingResult
      */
     public function toPendingResult(PromiseInterface $raw)
@@ -237,7 +234,7 @@ abstract class LambdaFunction
      */
     public function runtime()
     {
-        return Runtime::NODEJS_14;
+        return Runtime::NODEJS_20;
     }
 
     /**
@@ -323,6 +320,16 @@ abstract class LambdaFunction
     public function memory()
     {
         return config('sidecar.memory');
+    }
+
+    /**
+     * A list of tags to apply to the function.
+     *
+     * @return array
+     */
+    public function tags()
+    {
+        return [];
     }
 
     /**
@@ -433,7 +440,8 @@ abstract class LambdaFunction
             'Layers' => $this->layers(),
             'Publish' => true,
             'PackageType' => $this->packageType(),
-            'Architectures' => [$this->architecture()]
+            'Architectures' => [$this->architecture()],
+            'Tags' => $this->tags(),
         ];
 
         // For container image packages, we need to remove the Runtime

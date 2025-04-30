@@ -20,29 +20,29 @@ Sidecar packages, creates, deploys, and executes Lambda functions from your Lara
 
 You can write functions in any of the following runtimes and execute them straight from PHP:
 
+- Node.js 20
+- Node.js 18
 - Node.js 16
-- Node.js 14
-- Node.js 12
-- Node.js 10
+- Python 3.12
+- Python 3.11
+- Python 3.10
 - Python 3.9
 - Python 3.8
-- Python 3.7
-- Python 3.6
-- Python 2.7
-- Ruby 2.7
-- Ruby 2.5
+- Java 21
+- Java 17
 - Java 11
 - Java 8
-- Go 1.x
+- .NET 8
+- .NET 7
 - .NET 6
-- .NET Core 3.1
-- .NET Core 2.1
+- Ruby 3.3
+- Ruby 3.2
+- OS-only runtime (Amazon Linux 2023)
+- OS-only runtime (Amazon Linux 2)
 
 Any runtime that [Lambda supports](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html), you can use!
 
-### [Hammerstone](https://www.hammerstone.dev)
-
-Sidecar is maintained by [Aaron Francis](https://twitter.com/aarondfrancis). If you find it useful consider checking out [Refine](https://hammerstone.dev/refine/laravel/docs/main) which allows your users to easily create filters you can run on your app’s data. Works with Laravel and Vue 2 or Vue 3.
+Sidecar is maintained by [Aaron Francis](https://twitter.com/aarondfrancis), go follow me on Twitter! 
 
 ### What It Looks Like
 

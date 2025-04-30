@@ -7,7 +7,7 @@ namespace Hammerstone\Sidecar\Tests\Unit;
 
 use Hammerstone\Sidecar\Sidecar;
 
-class EnvironmentTest extends BaseTest
+class EnvironmentTest extends Base
 {
     /** @test */
     public function it_can_be_overridden()
@@ -26,9 +26,14 @@ class EnvironmentTest extends BaseTest
     /** @test */
     public function precedence_is_correct()
     {
-        config(['app.env' => 'app_env']);
+        Sidecar::clearEnvironment();
 
-        $this->assertEquals('app_env', Sidecar::getEnvironment());
+        config([
+            'sidecar.env' => null,
+            'app.env' => 'testing'
+        ]);
+
+        $this->assertEquals('testing', Sidecar::getEnvironment());
 
         config(['sidecar.env' => 'sidecar_env']);
 

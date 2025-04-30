@@ -22,7 +22,7 @@ use Throwable;
 
 class Manager
 {
-    use Macroable, HandlesLogging, ManagesEnvironments;
+    use HandlesLogging, Macroable, ManagesEnvironments;
 
     /**
      * @var string
@@ -30,7 +30,6 @@ class Manager
     public $executionVersion = 'active';
 
     /**
-     * @param $version
      * @param  null  $callback
      * @return Closure
      */
@@ -117,7 +116,6 @@ class Manager
     }
 
     /**
-     * @param $function
      * @param  array  $payload
      * @return PendingResult|Results\SettledResult
      *
@@ -130,8 +128,6 @@ class Manager
     }
 
     /**
-     * @param $function
-     * @param $payloads
      * @param  bool  $async
      * @return array
      *
@@ -160,7 +156,6 @@ class Manager
     }
 
     /**
-     * @param $params
      * @return array
      *
      * @throws Exceptions\SidecarException
@@ -172,7 +167,6 @@ class Manager
     }
 
     /**
-     * @param $function
      * @param  array  $payload
      * @return PendingResult|SettledResult
      *
@@ -208,15 +202,22 @@ class Manager
      */
     public function warm($functions = null)
     {
-        array_map(function (LambdaFunction $function) {
-            $this->warmSingle($function);
+        $results = array_map(function (LambdaFunction $function) {
+            return $this->warmSingle($function);
         }, $this->instantiatedFunctions($functions));
+
+        $results = Arr::flatten($results, 1);
+
+        // The requests will never be sent unless we wait for them to
+        // settle, because of how Guzzle handles async requests.
+        array_map(function ($result) {
+            return $result->settled();
+        }, $results);
     }
 
     /**
      * Warm a single function, with the option to override the version.
      *
-     * @param  LambdaFunction  $function
      * @param  bool  $async
      * @param  string  $version
      * @return array

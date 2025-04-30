@@ -5,9 +5,12 @@
 
 namespace Hammerstone\Sidecar\Results;
 
+use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
 use Hammerstone\Sidecar\LambdaFunction;
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PendingResult implements Responsable, ResultContract
 {
@@ -28,7 +31,6 @@ class PendingResult implements Responsable, ResultContract
 
     /**
      * @param  PromiseInterface  $raw
-     * @param  LambdaFunction  $function
      */
     public function __construct($raw, LambdaFunction $function)
     {
@@ -59,10 +61,10 @@ class PendingResult implements Responsable, ResultContract
     /**
      * Defer to the SettledResult.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function toResponse($request)
     {
